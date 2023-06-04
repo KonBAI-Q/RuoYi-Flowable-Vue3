@@ -37,6 +37,9 @@ import { parseTime, addDateRange, handleTree, selectDictLabel, selectDictLabels 
 // 国际化
 import i18n from '@/lang/index';
 
+import VForm3 from '@/lib/vform/designer.umd.js';
+import './lib/vform/designer.style.css';
+
 const app = createApp(App);
 // 全局方法挂载
 app.config.globalProperties.useDict = useDict;
@@ -54,6 +57,7 @@ app.use(ElementIcons);
 app.use(router);
 app.use(store);
 app.use(i18n);
+app.use(VForm3);
 app.use(plugins);
 // 自定义指令
 directive(app);
