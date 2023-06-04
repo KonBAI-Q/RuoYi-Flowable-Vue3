@@ -1,4 +1,8 @@
 import { createApp } from 'vue';
+
+import ElementPlus from 'element-plus';
+import locale from 'element-plus/lib/locale/lang/zh-cn'; // 中文语言
+
 // global css
 import 'uno.css';
 import '@/assets/styles/index.scss';
@@ -53,5 +57,10 @@ app.use(i18n);
 app.use(plugins);
 // 自定义指令
 directive(app);
+
+// 使用element-plus 并且设置全局的大小
+app.use(ElementPlus, {
+  locale: locale
+});
 
 app.mount('#app');
