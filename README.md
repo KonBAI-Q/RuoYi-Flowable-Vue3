@@ -9,6 +9,11 @@
 * 配套后端代码仓库地址
 * [RuoYi-Flowable-Plus](https://gitee.com/KonBAI-Q/ruoyi-flowable-plus.git)
 
+## 在线演示
+演示服务不限制CURD操作，希望大家按需使用，不要恶意添加脏数据或对服务器进行攻击等操作。（将不定期清理数据）
+
+[RuoYi-Flowable-Plus 在线演示](http://159.75.158.189/)
+
 ## 前端运行
 
 ```bash

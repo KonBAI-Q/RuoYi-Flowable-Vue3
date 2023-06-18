@@ -1,8 +1,8 @@
 {
-  "name": "ruoyi-vue-plus",
-  "version": "5.0.0",
-  "description": "RuoYi-Vue-Plus多租户管理系统",
-  "author": "LionLi",
+  "name": "ruoyi-flowable-plus",
+  "version": "0.9.0",
+  "description": "RuoYi-Flowable-Plus多租户管理系统",
+  "author": "KonBAI",
   "license": "MIT",
   "scripts": {
     "dev": "vite serve --mode development",
