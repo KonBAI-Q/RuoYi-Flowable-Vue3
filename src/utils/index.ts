@@ -316,3 +316,23 @@ export const removeClass = (ele: HTMLElement, cls: string) => {
 export const isExternal = (path: string) => {
   return /^(https?:|http?:|mailto:|tel:)/.test(path);
 };
+
+/**
+ * Remove the null value of the object
+ * @param {Object} obj
+ * @returns {Object}
+ * @example
+ * objectWithoutEmpty({ name: '', age: 0 }) // { age: 0 }
+ */
+export const objectWithoutEmpty = (obj: Record<string, any>) => {
+  if (!obj || obj.toString() !== '[object Object]') {
+    return {};
+  }
+  return Object.keys(obj).reduce((resObj, key) => {
+    if (obj[key] === undefined || obj[key] === null || obj[key] === '') {
+      return resObj;
+    } else {
+      return Object.assign({}, resObj, { [key]: obj[key] });
+    }
+  }, {});
+};
