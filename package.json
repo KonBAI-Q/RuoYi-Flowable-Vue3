@@ -28,6 +28,7 @@
     "bpmn-js-token-simulation": "^0.10.0",
     "codemirror-editor-vue3": "^2.0.6",
     "core-js": "^3.6.5",
+    "diagram-js": "^12.2.0",
     "diagram-js-minimap": "^2.1.1",
     "echarts": "5.4.0",
     "element-plus": "2.2.27",
