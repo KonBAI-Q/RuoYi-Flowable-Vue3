@@ -25,15 +25,23 @@
           <el-col :span="1.5">
             <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['workflow:model:remove']">删除</el-button>
           </el-col>
-<!--          <el-col :span="1.5">-->
-<!--            <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['workflow:model:export']">导出</el-button>-->
-<!--          </el-col>-->
+          <el-col :span="1.5">
+            <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['workflow:model:export']">导出</el-button>
+          </el-col>
+          <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
         </el-row>
       </template>
 
       <el-table v-loading="loading" :data="modelList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="模型标识" align="center" prop="modelKey" :show-overflow-tooltip="true" />
+        <el-table-column label="模型名称" align="center" :show-overflow-tooltip="true">
+          <template #default="scope">
+            <el-button type="text" @click="handleProcessView(scope.row)">
+              <span>{{ scope.row.modelName }}</span>
+            </el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="模型名称" align="center" prop="modelName" :show-overflow-tooltip="true" />
         <el-table-column label="流程分类" align="center" prop="categoryName" :formatter="categoryFormat" />
         <el-table-column label="模型版本" align="center">
@@ -93,18 +101,13 @@
       </template>
     </el-dialog>
 
-<!--    &lt;!&ndash; 流程图 &ndash;&gt;-->
-<!--    <el-dialog :title="view.title" v-model="view.visible" width="70%" append-to-body>-->
-<!--      <process-viewer :key="`designer-${processView.index}`" :xml="processView.xmlData" :style="{height: '400px'}" />-->
-<!--    </el-dialog>-->
-
     <el-dialog :title="designer.title" v-model="designer.visible" append-to-body fullscreen>
       <ProcessDesigner
         :key="designer.visible"
         ref="modelDesignerRef"
         v-loading="designerLoading"
         :designer-form="designerForm"
-        :bpmn-xml=bpmnXml
+        :bpmn-xml="bpmnXml"
         @save="onSaveDesigner"
       />
     </el-dialog>
@@ -136,6 +139,11 @@
 
       <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
     </el-dialog>
+
+    <!-- 流程图 -->
+    <el-dialog :title="processDialog.title" v-model="processDialog.visible" width="70%">
+      <process-viewer :key="`designer-${reloadIndex}`" :xml="processXml" :style="{height: '650px'}" />
+    </el-dialog>
   </div>
 </template>
 
@@ -159,6 +167,8 @@ const total = ref(0);
 const categoryOptions = ref<CategoryVO[]>([]);
 const designerLoading = ref(true);
 const bpmnXml = ref<string>('');
+const reloadIndex = ref(0);
+const processXml = ref<string>("");
 
 const historyList = ref<ModelVO[]>([]);
 const historyLoading = ref(true);
@@ -173,9 +183,9 @@ const dialog = reactive<DialogOption>({
   title: ''
 });
 
-const view = reactive<DialogOption>({
+const processDialog = reactive<DialogOption>({
   visible: false,
-  title: ''
+  title: '流程图'
 });
 
 const designer = reactive<DialogOption>({
@@ -287,14 +297,29 @@ const handleDelete = async (row?: ModelVO) => {
   getList();
   proxy?.$modal.msgSuccess("删除成功");
 }
+/** 导出按钮操作 */
+const handleExport = () => {
+  proxy?.download("workflow/model/export", {
+    ...queryParams.value
+  }, `model_${new Date().getTime()}.xlsx`);
+};
+/** 查看流程图 */
+const handleProcessView = async (row: any) => {
+  reloadIndex.value++;
+  // 发送请求，获取xml
+  const res = await getBpmnXml(row.modelId);
+  processXml.value = res.data;
+  processDialog.visible = true;
+}
 /** 设计按钮操作 */
 const handleDesigner = (row?: ModelVO) => {
   if (row) {
     designer.title = "流程设计 - " + row.modelName;
     designer.visible = true;
     designerForm.modelId = row.modelId;
-    getBpmnXml(row.modelId).then(response => {
-      bpmnXml.value = response.data || '';
+    nextTick(async () => {
+      const res = await getBpmnXml(row.modelId);
+      bpmnXml.value = res.data || '';
       designerLoading.value = false;
     });
   }
