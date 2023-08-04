@@ -157,6 +157,26 @@ export const dynamicRoutes: RouteOption[] = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen', icon: '' }
       }
     ]
+  },
+  {
+    path: '/workflow/process',
+    component: Layout,
+    hidden: true,
+    permissions: ['workflow:process:query'],
+    children: [
+      {
+        path: 'start/:deployId([\\w|\\-]+)',
+        component: () => import('@/views/workflow/work/start.vue'),
+        name: 'WorkStart',
+        meta: { title: '发起流程', activeMenu: '/workflow/process', icon: '' }
+      },
+      {
+        path: 'detail/:procInsId([\\w|\\-]+)',
+        component: () => import('@/views/workflow/work/detail.vue'),
+        name: 'WorkDetail',
+        meta: { title: '流程详情', activeMenu: '/work/own', icon: '' }
+      }
+    ]
   }
 ];
 
