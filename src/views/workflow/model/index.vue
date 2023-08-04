@@ -103,7 +103,7 @@
 
     <el-dialog :title="designer.title" v-model="designer.visible" append-to-body fullscreen>
       <ProcessDesigner
-        :key="designer.visible"
+        :key="`designer-${reloadIndex}`"
         ref="modelDesignerRef"
         v-loading="designerLoading"
         :designer-form="designerForm"
@@ -304,7 +304,7 @@ const handleExport = () => {
   }, `model_${new Date().getTime()}.xlsx`);
 };
 /** 查看流程图 */
-const handleProcessView = async (row: any) => {
+const handleProcessView = async (row: ModelVO) => {
   reloadIndex.value++;
   // 发送请求，获取xml
   const res = await getBpmnXml(row.modelId);
@@ -312,17 +312,14 @@ const handleProcessView = async (row: any) => {
   processDialog.visible = true;
 }
 /** 设计按钮操作 */
-const handleDesigner = (row?: ModelVO) => {
-  if (row) {
-    designer.title = "流程设计 - " + row.modelName;
-    designer.visible = true;
-    designerForm.modelId = row.modelId;
-    nextTick(async () => {
-      const res = await getBpmnXml(row.modelId);
-      bpmnXml.value = res.data || '';
-      designerLoading.value = false;
-    });
-  }
+const handleDesigner = async (row: ModelVO) => {
+  reloadIndex.value++;
+  designerForm.modelId = row.modelId;
+  const res = await getBpmnXml(row.modelId);
+  bpmnXml.value = res.data || '';
+  designerLoading.value = false;
+  designer.title = "流程设计 - " + row.modelName;
+  designer.visible = true;
 }
 const handleDeploy = (row?: ModelVO) => {
   loading.value = true;

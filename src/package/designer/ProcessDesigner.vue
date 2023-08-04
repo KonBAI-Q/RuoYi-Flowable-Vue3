@@ -272,7 +272,7 @@ export default {
   },
   mounted() {
     this.initBpmnModeler();
-    this.createNewDiagram(this.value);
+    this.createNewDiagram(this.modelValue);
     // this.$once("hook:beforeUnmount", () => {
     //   if (this.bpmnModeler) this.bpmnModeler.destroy();
     //   this.$emit("destroy", this.bpmnModeler);
